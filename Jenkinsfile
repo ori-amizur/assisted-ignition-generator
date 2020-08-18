@@ -4,7 +4,7 @@ pipeline {
   }
   agent {
     node {
-      label 'centos_worker'
+      label 'host'
     }
 
   }
@@ -18,9 +18,9 @@ pipeline {
 
 
   stage('publish images on push to master') {
-                when {
-                    branch 'master'
-                }
+//                 when {
+//                     branch 'master'
+//                 }
 
                 steps {
 

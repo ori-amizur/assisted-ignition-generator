@@ -8,27 +8,27 @@ from munch import munchify
 class InventoryHost:
 
     def __init__(self, host_dict):
-        self._host = munchify(**host_dict)
-        self._inventory = munchify(**json.loads(self._host.inventory))
+        self._host = munchify(host_dict)
+        self._inventory = munchify(json.loads(self._host.inventory))
 
 
     def get_inventory_host_nics_data(self):
-        interfaces_list = [munchify(**interface) for interface in self._inventory.interfaces]
+        interfaces_list = self._inventory.interfaces
         return [{'name': interface.name, 'model': interface.product, 'mac': interface.mac_address, 'ip': self._get_network_interface_ip(interface), 'speed': interface.speed_mbps} for interface in interfaces_list]
 
 
     def get_inventory_host_cpu_data(self):
-        cpu = munchify(**self._inventory.cpu)
+        cpu = self._inventory.cpu
         return {'model': cpu.model_name, 'arch': cpu.architecture, 'flags': cpu.flags, 'clockMegahertz': cpu.frequency, 'count': cpu.count}
 
 
     def get_inventory_host_storage_data(self):
-        disks_list = [munchify(**disk) for disk in self._inventory.disks]
+        disks_list = self._inventory.disks
         return [{'name': disk.name, 'vendor': disk.vendor, 'sizeBytes': disk.size_bytes, 'model': disk.model, 'wwn': disk.wwn, 'hctl': disk.hctl, 'serialNumber': disk.serial, 'rotational': True if disk.drive_type == 'HDD' else False} for disk in disks_list]
 
 
     def get_inventory_host_memory(self):
-        memory = munchify(**self._inventory.memory)
+        memory = self._inventory.memory
         return int(memory.physical_bytes / 1024 / 1024)
 
 
@@ -37,7 +37,7 @@ class InventoryHost:
 
 
     def get_inventory_host_system_vendor(self):
-        system_vendor = munchify(**self._inventory.system_vendor)
+        system_vendor = self._inventory.system_vendor
         return {'manufacturer': system_vendor.manufacturer, 'productName': system_vendor.product_name, 'serialNumber': system_vendor.serial_number}
 
     def is_role(self, role):
